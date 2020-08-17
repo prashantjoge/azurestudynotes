@@ -3,13 +3,13 @@
 
 Help with nvim fugitive, a plugin by Tim Pope (because vi is my favourite editor)
 
-# To stage the file
+## To stage the file
 :GWrite
 
-# To commit the file
+## To commit the file
 :Gcommit -> opens commit window (interactive Status: C)
 
-# To push the file
+## To push the file
 :Gpush
 
 
