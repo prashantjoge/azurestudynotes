@@ -1,0 +1,26 @@
+# Download storage explorer tar file to your downloads folder
+https://go.microsoft.com/fwlink/?LinkId=722418&clcid=0x409
+# or if expired
+https://azure.microsoft.com/en-us/features/storage-explorer/
+
+Mkdir storageExplorer
+tar -xvf StorageExplorer-linux-x64.tar.gz -C storageExplorer
+
+Sudo mv storageExplorer /usr/local/
+
+# Edit and Add to ~/.bashrc
+
+export STORAGEEXPLORER=/usr/local/storageExplorer
+export PATH=$PATH:$STORAGEEXPLORER
+
+# Close .bashrc
+
+# On the shell execute
+
+source .bashrc
+
+# you should now be able to invoke storage explorer
+from the shell
+
+StorageExplorer
+
