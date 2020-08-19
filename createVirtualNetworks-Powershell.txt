@@ -18,7 +18,7 @@ https://tools.ietf.org/html/rfc1918
 
 # Initialize variables
 $loc = "eastus"
-$rg = "WormwoodRG"
+$rgname = "WormwoodRG"
 $subnet1 = "pvtSubnet1"
 $subnet2 = "pvtSubnet2"
 $nwname = "MyNet"
@@ -65,7 +65,7 @@ $NIC_2 | Set-AzNetworkInterface
 
 # Create VM's
 $vmadmin = "rootadmin"
-$vmpassword= ConvertTo-SecureString "YourPassword6$$9678" -AsPlainText -Force 
+$vmpassword= ConvertTo-SecureString "YourPassword6$$9678" -AsPlainText -Force
 $vmname1= "MyVm1"
 $vmname2= "MyVm2"
 $vmsize= "Standard_B1S"
@@ -74,25 +74,30 @@ $NICName1 = "MyNIC1"
 $NICName2 = "MyNIC2"
 $Credential = New-Object System.Management.Automation.PSCredential ($vmAdmin, $vmpassword);
 
+# Create a VM with standard HDD
+$diskconfig = New-AzDiskConfig -Location $loc -DiskSizeGB 127 -AccountType Standard_LRS -OsType Windows -CreateOption Empty
+$disk = New-AzDisk -ResourceGroupName $rg.ResourceGroupName -DiskName $vmname1 -Disk $diskconfig
+
 # Create VM-1
 $vm1=""
-$vm1 = New-AzVMConfig -VMName $vmname1 -VMSize $vmsize 
-$vm1 = Set-AzVMOperatingSystem -VM $vm1 -Windows -ComputerName $vmname1 -Credential $Credential 
+$vm1 = New-AzVMConfig -VMName $vmname1 -VMSize $vmsize
+$vm1 = Set-AzVMOperatingSystem -VM $vm1 -Windows -ComputerName $vmname1 -Credential $Credential
 # Attach NIC
 $vm1 = Add-AzVMNetworkInterface -VM $vm1 -Id $NIC_1.Id
 #$vm1 = Set-AzPublicIpAddress -PublicIpAddress $pipVM1
-$vm1 = Set-AzVMSourceImage -VM $vm1 -PublisherName 'MicrosoftWindowsServer' -Offer 'WindowsServer' -Skus '2012-R2-Datacenter' -Version latest 
+$vm1 = Set-AzVMSourceImage -VM $vm1 -PublisherName 'MicrosoftWindowsServer' -Offer 'WindowsServer' -Skus '2012-R2-Datacenter' -Version latest
 #$vm1.NetworkProfile
+$vm1 = Set-AzVMOSDisk -VM $vm1 -StorageAccountType Standard_LRS -CreateOption Attach -Windows
 New-AzVM -ResourceGroupName $rg.ResourceGroupName -Location $loc -VM $vm1 -Verbose
 
 # Create VM-2
 $vm2=""
-$vm2 = New-AzVMConfig -VMName $vmname2 -VMSize $vmsize 
-$vm2 = Set-AzVMOperatingSystem -VM $vm2 -Windows -ComputerName $vmname2 -Credential $Credential 
-$vm2 = Add-AzVMNetworkInterface -VM $vm2 -Id $NIC_2.Id 
-#$vm2 = Set-AzPublicIpAddress -PublicIpAddress $pipVM2 
-$vm2 = Set-AzVMSourceImage -VM $vm2 -PublisherName 'MicrosoftWindowsServer' -Offer 'WindowsServer' -Skus '2012-R2-Datacenter' -Version latest 
-New-AzVM -ResourceGroupName $rg.ResourceGroupName -Location $loc -VM $vm2 -Verbose 
+$vm2 = New-AzVMConfig -VMName $vmname2 -VMSize $vmsize
+$vm2 = Set-AzVMOperatingSystem -VM $vm2 -Windows -ComputerName $vmname2 -Credential $Credential
+$vm2 = Add-AzVMNetworkInterface -VM $vm2 -Id $NIC_2.Id
+#$vm2 = Set-AzPublicIpAddress -PublicIpAddress $pipVM2
+$vm2 = Set-AzVMSourceImage -VM $vm2 -PublisherName 'MicrosoftWindowsServer' -Offer 'WindowsServer' -Skus '2012-R2-Datacenter' -Version latest
+New-AzVM -ResourceGroupName $rg.ResourceGroupName -Location $loc -VM $vm2 -Verbose
 
 # Clean up resources
 # Remove-AzResourceGroup -Name $rg.ResourceGroupName
@@ -103,4 +108,4 @@ New-AzVM -ResourceGroupName $rg.ResourceGroupName -Location $loc -VM $vm2 -Verbo
 # get-help "New-azvirtualnetwork" -examples
 # get-help "new-AzNatGateway" -examples
 # get-help "new-AzNetworkInterface" -examples
-# get-help "get-azvmimagesku" -examples  
+# get-help "get-azvmimagesku" -examples
