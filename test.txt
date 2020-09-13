@@ -1,4 +1,4 @@
 # git pull
 # Git add test.txt
-# git commit 'added some txt'
+# git commit -m 'added some txt'
 # git push origin master
