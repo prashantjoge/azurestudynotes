@@ -2,3 +2,7 @@
 # Git add test.txt
 # git commit -m 'added some txt'
 # git push origin master
+# git branch testbranch
+# git checkout test
+# git commit -m "new line added"
+
